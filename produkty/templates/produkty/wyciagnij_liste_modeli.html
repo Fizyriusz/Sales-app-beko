@@ -1,0 +1,21 @@
+{% extends 'produkty/base.html' %}
+
+{% block title %}Wyciągnij Listę Modeli{% endblock %}
+
+{% block content %}
+    <h1>Lista Modeli:</h1>
+    <textarea readonly rows="15" cols="40">{{ lista_modeli|join:"\n" }}</textarea>
+
+    <br><br>
+
+    <button onclick="copyToClipboard()">Kopiuj do schowka</button>
+
+    <script>
+        function copyToClipboard() {
+            const textarea = document.querySelector("textarea");
+            textarea.select();
+            document.execCommand("copy");
+            alert("Tekst został skopiowany do schowka!");
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Formularz Ekspozycji</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Ekspozycja dla grupy: {{ grupa.nazwa }}</h2>
+        <form method="POST" action="{% url 'produkty:ekspozycja_form' grupa_id=grupa.id %}">
+            {% csrf_token %}
+            <h2>*{{ grupa.nazwa }}*</h2>
+            <table>
+                {% for marka in marki %}
+                <tr>
+                    <td>{{ marka.nazwa }}</td>
+                    <td>
+                        <button type="button" onclick="decrease('{{ marka.id }}')">-</button>
+                        <input type="number" id="marka-{{ marka.id }}" name="marka_{{ marka.id }}" value="0" readonly>
+                        <button type="button" onclick="increase('{{ marka.id }}')">+</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            <h3>Total w grupie: <span id="total">0</span></h3>
+            <button type="submit">Zapisz</button>
+        </form>
+        
+        <script>
+            function increase(id) {
+                const input = document.getElementById(`marka-${id}`);
+                input.value = parseInt(input.value) + 1;
+                updateTotal();
+            }
+        
+            function decrease(id) {
+                const input = document.getElementById(`marka-${id}`);
+                if (parseInt(input.value) > 0) {
+                    input.value = parseInt(input.value) - 1;
+                    updateTotal();
+                }
+            }
+        
+            function updateTotal() {
+                let total = 0;
+                document.querySelectorAll('input[type="number"]').forEach(input => {
+                    total += parseInt(input.value);
+                });
+                document.getElementById('total').textContent = total;
+            }
+        </script>
+    </div>
+</body>
+</html>

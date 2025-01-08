@@ -1,0 +1,16 @@
+{% extends 'produkty/base.html' %}
+
+{% block title %}Importuj plik Excel{% endblock %}
+
+{% block content %}
+    <h2>Importuj plik Excel</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="file" required>
+        <button type="submit">Załaduj</button>
+    </form>
+
+    <br><br>
+
+    <a href="{% url 'produkty:home' %}">Wróć do strony głównej</a>
+{% endblock %}

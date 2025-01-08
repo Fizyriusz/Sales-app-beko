@@ -1,0 +1,9 @@
+{% extends 'produkty/base.html' %}
+
+{% block title %}Sprzedaż Dodana{% endblock %}
+
+{% block content %}
+    <h1>Sukces!</h1>
+    <p>Sprzedaż produktu została pomyślnie dodana do bazy danych.</p>
+    <a href="{% url 'produkty:sprzedaz' %}">Powrót do strony sprzedaży</a>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'produkty/base.html' %}
+
+{% block title %}Import zakończony{% endblock %}
+
+{% block content %}
+    <h2>Dane zostały zaimportowane pomyślnie!</h2>
+    
+    <br><br>
+    
+    <a href="{% url 'produkty:home' %}">Wróć do strony głównej</a>
+{% endblock %}

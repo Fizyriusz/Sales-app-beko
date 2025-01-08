@@ -1,0 +1,19 @@
+{% extends 'produkty/base.html' %}
+
+{% block content %}
+    <h1>Postęp Zadaniówki: {{ zadaniowka.nazwa }}</h1>
+    
+    <p>Opis: {{ zadaniowka.opis }}</p>
+    <p>Cel (minimalna liczba sztuk): {{ zadaniowka.minimalna_liczba_sztuk }}</p>
+    <p>Sprzedano: {{ total_sprzedane_sztuki }} szt.</p>
+    <p>Pozostało do celu: {{ pozostaly_cel }} szt.</p>
+    
+    <h2>Produkty objęte zadaniówką:</h2>
+    <ul>
+        {% for produkt in produkty %}
+            <li>{{ produkt.marka }} - {{ produkt.model }}</li>
+        {% endfor %}
+    </ul>
+    
+    <a href="{% url 'produkty:lista_zadaniowek' %}">Powrót do listy zadaniówek</a>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'produkty/base.html' %}
+
+{% block title %}Podsumowanie Sprzedaży{% endblock %}
+
+{% block content %}
+    <h1>Podsumowanie Sprzedaży</h1>
+    <p>Liczba sprzedanych sztuk: {{ liczba_sztuk }}</p>
+    <p>Całkowita prowizja: {{ calkowita_prowizja }} PLN</p>
+
+    <h2>Sprzedane produkty:</h2>
+    <ul>
+        {% for model, dane in sprzedaz.items %}
+            <li>{{ dane.marka }} - {{ model }} - {{ dane.liczba_sztuk }} sztuk - Prowizja per szt.: {{ dane.stawka }} PLN - Suma: {{ dane.suma_prowizji }} PLN</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Filtruj sprzedaż:</h3>
+    <form method="get" action="">
+        <label for="data_od">Data od:</label>
+        <input type="date" name="data_od" id="data_od">
+
+        <label for="data_do">Data do:</label>
+        <input type="date" name="data_do" id="data_do">
+
+        <label for="produkt">Produkt:</label>
+        <input type="text" name="produkt" id="produkt" placeholder="Wpisz nazwę produktu">
+
+        <label for="marka">Marka:</label>
+        <input type="text" name="marka" id="marka" placeholder="Wpisz nazwę marki">
+
+        <button type="submit">Filtruj</button>
+    </form>
+{% endblock %}

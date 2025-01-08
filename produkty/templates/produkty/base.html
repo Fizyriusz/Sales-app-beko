@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Aplikacja Sprzedażowa{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'produkty/style.css' %}?v=3">
+</head>
+<body>
+    <!-- Nagłówek -->
+    <div class="header">
+        <button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
+        <h1>Witaj w aplikacji sprzedażowej Beko!</h1>
+    </div>
+
+    <!-- Kontener -->
+    <div class="container" id="container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <h3>Nawigacja</h3>
+            <ul>
+                <li><a href="{% url 'produkty:home' %}">Strona Główna</a></li>
+                <li><a href="{% url 'produkty:import_excel' %}">Import Produktów</a></li>
+                <li><a href="{% url 'produkty:sprzedaz' %}">Rejestracja Sprzedaży</a></li>
+                <li><a href="{% url 'produkty:podsumowanie_sprzedazy' %}">Podsumowanie Sprzedaży</a></li>
+                <li><a href="{% url 'produkty:wyciagnij_liste_modeli' %}">Wyciągnij Listę Modeli</a></li>
+                <li><a href="{% url 'produkty:lista_zadaniowek' %}">Zadaniowki</a></li>
+            </ul>
+        </div>
+
+        <!-- Główna zawartość -->
+        <div class="main-content" id="main-content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const container = document.getElementById('container');
+            sidebar.classList.toggle('open');
+            container.classList.toggle('with-sidebar');
+        }
+    </script>
+</body>
+</html>

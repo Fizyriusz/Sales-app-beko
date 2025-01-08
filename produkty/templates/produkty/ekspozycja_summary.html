@@ -1,0 +1,22 @@
+{% extends 'produkty/base.html' %}
+
+{% block title %}
+Podsumowanie Ekspozycji
+{% endblock %}
+
+{% block content %}
+<h1>Podsumowanie Ekspozycji</h1>
+<ul>
+    {% for grupa in dane_podsumowania %}
+        <li>
+            <h2>{{ grupa.grupa }}</h2>
+            <ul>
+                {% for marka in grupa.marki %}
+                    <li>{{ marka.marka.nazwa }}: {{ marka.liczba }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'produkty:home' %}">Powrót do strony głównej</a>
+{% endblock %}

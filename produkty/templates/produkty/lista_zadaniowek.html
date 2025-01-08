@@ -1,0 +1,29 @@
+{% extends 'produkty/base.html' %}
+
+{% block content %}
+    <h1>Lista Zadaniówek</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nazwa zadaniówki</th>
+                <th>Opis</th>
+                <th>Minimalna liczba sztuk</th>
+                <th>Data rozpoczęcia</th>
+                <th>Data zakończenia</th>
+                <th>Postęp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for zadaniowka in zadaniowki %}
+            <tr>
+                <td><a href="{% url 'produkty:szczegoly_zadaniowki' zadaniowka.id %}">{{ zadaniowka.nazwa }}</a></td>
+                <td>{{ zadaniowka.opis }}</td>
+                <td>{{ zadaniowka.minimalna_liczba_sztuk }}</td>
+                <td>{{ zadaniowka.data_rozpoczecia }}</td>
+                <td>{{ zadaniowka.data_zakonczenia }}</td>
+                <td><a href="{% url 'produkty:postepy_zadaniowki' zadaniowka.id %}">Zobacz postęp</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'produkty/base.html' %}
+
+{% block title %}Sugestie dla Nieznanych Modeli{% endblock %}
+
+{% block content %}
+    <h1>Sugestie dla nieznanych modeli</h1>
+    <form method="post">
+        {% csrf_token %}
+        <p>Data sprzedaży: {{ data_sprzedazy }}</p>
+        <ul>
+            {% for wpis, sugestia in sugestie %}
+                <li>
+                    Nieznany model: <strong>{{ wpis }}</strong><br>
+                    Czy chodziło Ci o: <strong>{{ sugestia }}</strong>?
+                    <input type="radio" name="model_{{ forloop.counter }}" value="{{ sugestia }}"> Tak
+                    <input type="radio" name="model_{{ forloop.counter }}" value="{{ wpis }}"> Nie, użyj oryginału
+                </li>
+            {% endfor %}
+        </ul>
+        <button type="submit">Zatwierdź sprzedaż</button>
+    </form>
+{% endblock %}

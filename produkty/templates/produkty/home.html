@@ -1,0 +1,32 @@
+{% extends 'produkty/base.html' %}
+
+{% block title %}
+Strona Główna
+{% endblock %}
+
+{% block content %}
+<div class="main-links">
+    <ul>
+        <li><a href="{% url 'produkty:import_excel' %}">Import Produktów</a></li>
+        <li><a href="{% url 'produkty:sprzedaz' %}">Rejestracja Sprzedaży</a></li>
+        <li><a href="{% url 'produkty:podsumowanie_sprzedazy' %}">Podsumowanie Sprzedaży</a></li>
+        <li><a href="{% url 'produkty:wyciagnij_liste_modeli' %}">Wyciągnij Listę Modeli</a></li>
+        <li><a href="{% url 'produkty:lista_zadaniowek' %}">Zadaniowki</a></li>
+        <li><a href="{% url 'produkty:ekspozycja_form' grupa_id=1 %}">Formularz Ekspozycji</a></li>
+    </ul>
+</div>
+
+<div class="sales-summary">
+    <h2>Podsumowanie Sprzedaży</h2>
+    <div class="cards-container">
+        <div class="card">
+            <h3>Tygodniowa sprzedaż</h3>
+            <p class="amount">{{ tygodniowa_suma }} PLN</p>
+        </div>
+        <div class="card">
+            <h3>Miesięczna sprzedaż</h3>
+            <p class="amount">{{ miesieczna_suma }} PLN</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

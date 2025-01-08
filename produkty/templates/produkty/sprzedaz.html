@@ -1,0 +1,19 @@
+{% extends 'produkty/base.html' %}
+
+{% block title %}Rejestracja Sprzedaży{% endblock %}
+
+{% block content %}
+    <h1>Rejestracja Sprzedaży</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="data_sprzedazy">Data Sprzedaży:</label>
+        <input type="date" id="data_sprzedazy" name="data_sprzedazy" required><br><br>
+
+        <label for="modele_sprzedazy">Modele sprzedane (każdy model w nowej linii):</label><br>
+        <textarea id="modele_sprzedazy" name="modele_sprzedazy" rows="10" cols="50" required></textarea><br><br>
+
+        <button type="submit">Zapisz Sprzedaż</button>
+    </form>
+
+    <a href="{% url 'produkty:home' %}">Wróć do strony głównej</a>
+{% endblock %}

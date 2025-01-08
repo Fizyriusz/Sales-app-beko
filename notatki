@@ -1,0 +1,14 @@
+Rozumiem, czyli teraz przechodzimy do kolejnych etapów, aby zaimplementować funkcje, które umożliwią obsługę wprowadzonej bazy danych, zgodnie z wcześniejszymi ustaleniami. Przypomnę, co planowaliśmy:
+
+1. **Codzienne wpisywanie sprzedanych modeli**: W tej sekcji użytkownik będzie mógł codziennie wprowadzać dane dotyczące sprzedanych modeli. Będziemy potrzebować formularza, w którym można wprowadzać modele oraz liczbę sprzedanych sztuk, z datą sprzedaży.
+
+2. **Podsumowanie sprzedaży**:
+   - **Zarobione pieniądze** - będziemy chcieli obliczać prowizję na podstawie sprzedanych modeli i stawek, które są w bazie danych.
+   - **Liczba sprzedanych sztuk** - tutaj zbierzemy liczbę wszystkich sprzedanych produktów i przedstawimy podsumowanie.
+
+3. **Analiza danych**: Oprócz podsumowania sprzedaży, dobrze byłoby wprowadzić pewne narzędzia do analizy, np.:
+   - Sprzedaż w danym okresie czasu.
+   - Najlepiej sprzedające się modele.
+   - Porównanie z targetem, jeśli taki istnieje.
+
+Co powiesz na takie działania krok po kroku? Możemy zacząć od formularza do codziennego wpisywania sprzedanych modeli, a później przejść do podsumowania.

@@ -1,0 +1,18 @@
+{% extends 'produkty/base.html' %}
+
+{% block content %}
+    <h1>{{ zadaniowka.nazwa }}</h1>
+    <p>Data rozpoczęcia: {{ zadaniowka.data_rozpoczecia }}</p>
+    <p>Data zakończenia: {{ zadaniowka.data_zakonczenia }}</p>
+    <p>Minimalna liczba sztuk: {{ zadaniowka.minimalna_liczba_sztuk }}</p>
+    <p>Premia za minimalną liczbę: {{ zadaniowka.premia_za_minimalna_liczbe }} PLN</p>
+
+    <h2>Produkty objęte zadaniem:</h2>
+    <ul>
+        {% for produkt in zadaniowka.produkty.all %}
+            <li>{{ produkt.model }} ({{ produkt.marka }})</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'produkty:lista_zadaniowek' %}">Wróć do listy zadaniówek</a>
+{% endblock %}
