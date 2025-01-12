@@ -5,15 +5,13 @@ Strona Główna
 {% endblock %}
 
 {% block content %}
-<div class="main-links">
-    <ul>
-        <li><a href="{% url 'produkty:import_excel' %}">Import Produktów</a></li>
-        <li><a href="{% url 'produkty:sprzedaz' %}">Rejestracja Sprzedaży</a></li>
-        <li><a href="{% url 'produkty:podsumowanie_sprzedazy' %}">Podsumowanie Sprzedaży</a></li>
-        <li><a href="{% url 'produkty:wyciagnij_liste_modeli' %}">Wyciągnij Listę Modeli</a></li>
-        <li><a href="{% url 'produkty:lista_zadaniowek' %}">Zadaniowki</a></li>
-        <li><a href="{% url 'produkty:ekspozycja_form' grupa_id=1 %}">Formularz Ekspozycji</a></li>
-    </ul>
+<div class="buttons-container">
+    <a href="{% url 'produkty:import_excel' %}">Import Produktów</a>
+    <a href="{% url 'produkty:sprzedaz' %}">Rejestracja Sprzedaży</a>
+    <a href="{% url 'produkty:podsumowanie_sprzedazy' %}">Podsumowanie Sprzedaży</a>
+    <a href="{% url 'produkty:wyciagnij_liste_modeli' %}">Wyciągnij Listę Modeli</a>
+    <a href="{% url 'produkty:lista_zadaniowek' %}">Zadaniowki</a>
+    <a href="{% url 'produkty:ekspozycja_form' grupa_id=1 %}">Formularz Ekspozycji</a>
 </div>
 
 <div class="sales-summary">

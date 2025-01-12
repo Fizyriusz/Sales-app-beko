@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>{% block title %}Aplikacja Sprzedażowa{% endblock %}</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'produkty/style.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'produkty/style.css' %}?v=5">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
     <!-- Nagłówek -->
@@ -13,10 +14,14 @@
         <h1>Witaj w aplikacji sprzedażowej Beko!</h1>
     </div>
 
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
     <!-- Kontener -->
     <div class="container" id="container">
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
+            <button class="close-hamburger">&#9776;</button>
             <h3>Nawigacja</h3>
             <ul>
                 <li><a href="{% url 'produkty:home' %}">Strona Główna</a></li>
@@ -25,23 +30,63 @@
                 <li><a href="{% url 'produkty:podsumowanie_sprzedazy' %}">Podsumowanie Sprzedaży</a></li>
                 <li><a href="{% url 'produkty:wyciagnij_liste_modeli' %}">Wyciągnij Listę Modeli</a></li>
                 <li><a href="{% url 'produkty:lista_zadaniowek' %}">Zadaniowki</a></li>
+                <li><a href="{% url 'produkty:ekspozycja_form' grupa_id=1 %}">Formularz Ekspozycji</a></li>
             </ul>
         </div>
-
+        
+        
         <!-- Główna zawartość -->
         <div class="main-content" id="main-content">
             {% block content %}{% endblock %}
         </div>
     </div>
 
-    <!-- JavaScript -->
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const container = document.getElementById('container');
-            sidebar.classList.toggle('open');
-            container.classList.toggle('with-sidebar');
+   document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('sidebar');
+    const container = document.getElementById('container');
+    const overlay = document.getElementById('overlay');
+    const links = document.querySelectorAll('.sidebar a');
+    const hamburger = document.querySelector('.hamburger');
+    const closeHamburger = document.querySelector('.close-hamburger');
+
+    function toggleSidebar() {
+        const isOpen = sidebar.classList.contains('open');
+        if (isOpen) {
+            closeSidebar();
+        } else {
+            openSidebar();
         }
+    }
+
+    function openSidebar() {
+        sidebar.classList.add('open');
+        container.classList.add('with-sidebar');
+        overlay.classList.add('active');
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        container.classList.remove('with-sidebar');
+        overlay.classList.remove('active');
+    }
+
+    // Obsługa kliknięcia w głównego hamburgera
+    hamburger.addEventListener('click', toggleSidebar);
+
+    // Obsługa kliknięcia w linki sidebaru
+    links.forEach(link => {
+        link.addEventListener('click', closeSidebar);
+    });
+
+    // Obsługa kliknięcia w overlay
+    overlay.addEventListener('click', closeSidebar);
+
+    // Obsługa kliknięcia w hamburger w sidebarze
+    closeHamburger.addEventListener('click', closeSidebar);
+});
+
     </script>
+    
 </body>
 </html>
