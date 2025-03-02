@@ -2,7 +2,7 @@
 source ~/env/bin/activate
 python manage.py runserver
 
-
+sadsa
 /* Resetowanie i ogólne style */
 body {
     font-family: Arial, sans-serif;

@@ -381,21 +381,27 @@ button.btn-decrease:hover, button.btn-increase:hover {
 
 .buttons-container {
     display: flex;
-    justify-content: center;
-    gap: 20px;
+    justify-content: space-between;
+    gap: 10px;
     margin-top: 20px;
 }
 
-.btn-save, .btn-back {
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    font-weight: bold;
+.btn-back,
+.btn-save {
+    display: inline-block;
+    padding: 0; /* Usuń dodatkowe odstępy wewnętrzne */
+    width: 150px; /* Stała szerokość */
+    height: 50px; /* Stała wysokość */
+    line-height: 50px; /* Tekst wyśrodkowany pionowo */
+    font-size: 20px;
+    font-weight: normal; /* Usunięcie pogrubienia */
     color: white;
     background-color: #1abc9c;
-    border-radius: 10px;
-    transition: all 0.3s ease;
     border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.3s ease;
 }
 
 .btn-save:hover, .btn-back:hover {
@@ -405,12 +411,23 @@ button.btn-decrease:hover, button.btn-increase:hover {
 }
 
 .btn-back {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 20px;
+    color: white;
     background-color: #34495e;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
 }
 
 .btn-back:hover {
     background-color: #2c3e50;
 }
+
 
 
 /* Cards Layout */

@@ -105,7 +105,26 @@ def sprzedaz(request):
                     model=model,
                     defaults={'stawka': 0, 'grupa_towarowa': 'NIEZNANA'}
                 )
-                Sprzedaz.objects.create(produkt=produkt, data_sprzedazy=data_sprzedazy, liczba_sztuk=1)
+                sprzedaz = Sprzedaz.objects.create(
+                    produkt=produkt,
+                    data_sprzedazy=data_sprzedazy,
+                    liczba_sztuk=1
+                )
+
+                # Sprawdź, czy produkt pasuje do jakiegoś zadania
+                wszystkie_zadania = Task.objects.filter(data_od__lte=data_sprzedazy, data_do__gte=data_sprzedazy)
+                for zadanie in wszystkie_zadania:
+                    if produkt in zadanie.produkty.all():
+                        # Oblicz liczbę sprzedanych produktów dla zadania
+                        sprzedane = Sprzedaz.objects.filter(
+                            produkt__in=zadanie.produkty.all(),
+                            data_sprzedazy__range=[zadanie.data_od, zadanie.data_do]
+                        ).aggregate(models.Sum('liczba_sztuk'))['liczba_sztuk__sum'] or 0
+
+                        # Jeśli spełniono warunek minimalnej liczby sztuk, zastosuj mnożnik stawki
+                        if sprzedane >= zadanie.minimalna_liczba_sztuk:
+                            sprzedaz.prowizja = produkt.stawka * zadanie.mnoznik_stawki
+                            sprzedaz.save()
 
             return redirect('produkty:sprzedaz_sukces')
 
@@ -127,8 +146,27 @@ def sprzedaz(request):
             if model in wszystkie_modele:
                 # Jeśli model istnieje w bazie, zapisz sprzedaż
                 produkt = Produkt.objects.get(model=model)
-                Sprzedaz.objects.create(produkt=produkt, data_sprzedazy=data_sprzedazy, liczba_sztuk=1)
+                sprzedaz = Sprzedaz.objects.create(
+                    produkt=produkt,
+                    data_sprzedazy=data_sprzedazy,
+                    liczba_sztuk=1
+                )
                 zatwierdzone_modele.append(model)
+
+                # Sprawdź, czy produkt pasuje do jakiegoś zadania
+                wszystkie_zadania = Task.objects.filter(data_od__lte=data_sprzedazy, data_do__gte=data_sprzedazy)
+                for zadanie in wszystkie_zadania:
+                    if produkt in zadanie.produkty.all():
+                        # Oblicz liczbę sprzedanych produktów dla zadania
+                        sprzedane = Sprzedaz.objects.filter(
+                            produkt__in=zadanie.produkty.all(),
+                            data_sprzedazy__range=[zadanie.data_od, zadanie.data_do]
+                        ).aggregate(models.Sum('liczba_sztuk'))['liczba_sztuk__sum'] or 0
+
+                        # Jeśli spełniono warunek minimalnej liczby sztuk, zastosuj mnożnik stawki
+                        if sprzedane >= zadanie.minimalna_liczba_sztuk:
+                            sprzedaz.prowizja = produkt.stawka * zadanie.mnoznik_stawki
+                            sprzedaz.save()
             else:
                 # Jeśli model nie istnieje, znajdź najbardziej podobny model
                 najlepszy_wynik = process.extractOne(model, wszystkie_modele, scorer=fuzz.ratio)
@@ -140,8 +178,27 @@ def sprzedaz(request):
                         model=model,
                         defaults={'stawka': 0, 'grupa_towarowa': 'NIEZNANA'}
                     )
-                    Sprzedaz.objects.create(produkt=produkt, data_sprzedazy=data_sprzedazy, liczba_sztuk=1)
+                    sprzedaz = Sprzedaz.objects.create(
+                        produkt=produkt,
+                        data_sprzedazy=data_sprzedazy,
+                        liczba_sztuk=1
+                    )
                     zatwierdzone_modele.append(model)
+
+                    # Sprawdź, czy produkt pasuje do jakiegoś zadania
+                    wszystkie_zadania = Task.objects.filter(data_od__lte=data_sprzedazy, data_do__gte=data_sprzedazy)
+                    for zadanie in wszystkie_zadania:
+                        if produkt in zadanie.produkty.all():
+                            # Oblicz liczbę sprzedanych produktów dla zadania
+                            sprzedane = Sprzedaz.objects.filter(
+                                produkt__in=zadanie.produkty.all(),
+                                data_sprzedazy__range=[zadanie.data_od, zadanie.data_do]
+                            ).aggregate(models.Sum('liczba_sztuk'))['liczba_sztuk__sum'] or 0
+
+                            # Jeśli spełniono warunek minimalnej liczby sztuk, zastosuj mnożnik stawki
+                            if sprzedane >= zadanie.minimalna_liczba_sztuk:
+                                sprzedaz.prowizja = produkt.stawka * zadanie.mnoznik_stawki
+                                sprzedaz.save()
 
         # Jeśli są sugestie, wyświetl je w formularzu
         if sugestie:
@@ -164,38 +221,49 @@ def podsumowanie_sprzedazy(request):
     data_od = request.GET.get('data_od')
     data_do = request.GET.get('data_do')
     produkt = request.GET.get('produkt')
-    marka = request.GET.get('marka')  # Dodajemy nowy parametr do filtrowania
+    marka = request.GET.get('marka')
 
     # Tworzenie podstawowego zapytania do modelu Sprzedaz
     sprzedaz = Sprzedaz.objects.all()
 
-    # Filtracja na podstawie daty, jeśli daty są podane
+    # Filtracja na podstawie daty
     if data_od:
         sprzedaz = sprzedaz.filter(data_sprzedazy__gte=data_od)
     if data_do:
         sprzedaz = sprzedaz.filter(data_sprzedazy__lte=data_do)
 
-    # Filtracja na podstawie nazwy produktu, jeśli nazwa jest podana
+    # Filtracja na podstawie produktu i marki
     if produkt:
         sprzedaz = sprzedaz.filter(produkt__model__icontains=produkt)
-
-    # Filtracja na podstawie marki, jeśli marka jest podana
     if marka:
         sprzedaz = sprzedaz.filter(produkt__marka__icontains=marka)
 
-    # Grupowanie danych w Pythonie
+    # Grupowanie danych
     sprzedaz_podsumowanie = defaultdict(lambda: {'liczba_sztuk': 0, 'stawka': 0, 'suma_prowizji': 0, 'marka': ''})
+
+    # Pobieranie aktywnych zadań
+    today = timezone.now().date()
+    aktywne_zadania = Task.objects.filter(data_od__lte=today, data_do__gte=today)
 
     for item in sprzedaz:
         model = item.produkt.model
         marka = item.produkt.marka
-        sprzedaz_podsumowanie[(marka, model)]['liczba_sztuk'] += item.liczba_sztuk
-        sprzedaz_podsumowanie[(marka, model)]['stawka'] = item.produkt.stawka
-        sprzedaz_podsumowanie[(marka, model)]['suma_prowizji'] += item.produkt.stawka * item.liczba_sztuk
-        sprzedaz_podsumowanie[(marka, model)]['marka'] = marka
+        stawka = item.produkt.stawka
 
-    # Przekształcenie defaultdict na zwykły słownik do renderowania
-    sprzedaz_podsumowanie = dict(sprzedaz_podsumowanie)
+        # Sprawdź, czy produkt pasuje do aktywnego zadania i uwzględnij mnożnik stawki
+        mnoznik = 1
+        for zadanie in aktywne_zadania:
+            if item.produkt in zadanie.produkty.all():
+                mnoznik = zadanie.mnoznik_stawki
+                break
+
+        # Zastosuj mnożnik do stawki
+        rzeczywista_stawka = stawka * mnoznik
+
+        sprzedaz_podsumowanie[(marka, model)]['liczba_sztuk'] += item.liczba_sztuk
+        sprzedaz_podsumowanie[(marka, model)]['stawka'] = rzeczywista_stawka
+        sprzedaz_podsumowanie[(marka, model)]['suma_prowizji'] += rzeczywista_stawka * item.liczba_sztuk
+        sprzedaz_podsumowanie[(marka, model)]['marka'] = marka
 
     # Obliczanie sumarycznych wartości dla wszystkich sprzedaży
     liczba_sztuk = sum(item['liczba_sztuk'] for item in sprzedaz_podsumowanie.values())
@@ -256,6 +324,14 @@ def ekspozycja_form(request, grupa_id):
     grupa = get_object_or_404(GrupaProduktowa, id=grupa_id)
     marki = Marka.objects.all()
 
+    # Pobierz wszystkie grupy w kolejności po ID
+    wszystkie_grupy = list(GrupaProduktowa.objects.order_by('id'))
+    obecny_index = wszystkie_grupy.index(grupa)
+
+    # Określ poprzednią i następną grupę
+    poprzednia_grupa = wszystkie_grupy[obecny_index - 1] if obecny_index > 0 else None
+    nastepna_grupa = wszystkie_grupy[obecny_index + 1] if obecny_index < len(wszystkie_grupy) - 1 else None
+
     if request.method == 'POST':
         # Usuń istniejące rekordy dla tej grupy, aby uniknąć duplikatów
         Ekspozycja.objects.filter(grupa=grupa).delete()
@@ -269,15 +345,16 @@ def ekspozycja_form(request, grupa_id):
             )
         
         # Przejdź do następnej grupy lub wyświetl podsumowanie
-        ostatnia_grupa_id = GrupaProduktowa.objects.last().id
-        if grupa_id >= ostatnia_grupa_id:
-            return redirect('produkty:ekspozycja_summary')
-        return redirect('produkty:ekspozycja_form', grupa_id=grupa_id + 1)
+        if nastepna_grupa:
+            return redirect('produkty:ekspozycja_form', grupa_id=nastepna_grupa.id)
+        return redirect('produkty:ekspozycja_summary')
 
     return render(request, 'produkty/ekspozycja_form.html', {
         'grupa': grupa,
         'marki': marki,
+        'poprzednia_grupa': poprzednia_grupa,
     })
+
         
 def ekspozycja_summary(request):
     # Pobierz wszystkie dane ekspozycji z bazy danych

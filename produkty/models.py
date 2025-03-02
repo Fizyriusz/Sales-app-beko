@@ -11,16 +11,18 @@ class Produkt(models.Model):
 
 class Task(models.Model):
     nazwa = models.CharField(max_length=255)
-    opis = models.TextField()
-    minimalna_liczba_sztuk = models.IntegerField()
+    opis = models.TextField(blank=True)
+    minimalna_liczba_sztuk = models.PositiveIntegerField(default=0)
     premia_za_minimalna_liczbe = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     premia_za_dodatkowa_liczbe = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    produkty = models.ManyToManyField(Produkt)  # Produkty, które są częścią zadaniówki
-    data_rozpoczecia = models.DateField()
-    data_zakonczenia = models.DateField()
+    mnoznik_stawki = models.DecimalField(max_digits=4, decimal_places=2, default=1.0, help_text="Mnożnik dla stawki produktów")
+    produkty = models.ManyToManyField('Produkt', related_name='zadania')
+    data_od = models.DateField()
+    data_do = models.DateField()
 
     def __str__(self):
-        return f"{self.nazwa} ({self.data_rozpoczecia} - {self.data_zakonczenia})"
+        return f"{self.nazwa} ({self.data_od} - {self.data_do})"
+
 
 class Sprzedaz(models.Model):
     produkt = models.ForeignKey(Produkt, on_delete=models.CASCADE)

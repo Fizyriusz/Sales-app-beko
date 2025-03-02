@@ -32,11 +32,12 @@ Podsumowanie Ekspozycji
         </table>
         <h3>Total w grupie: <span id="total">0</span></h3>
         <div class="buttons-container">
-            <button type="submit" class="btn-save">Zapisz</button>
             {% if poprzednia_grupa %}
             <a href="{% url 'produkty:ekspozycja_form' grupa_id=poprzednia_grupa.id %}" class="btn-back">Powrót</a>
             {% endif %}
+            <a href="#" onclick="this.closest('form').submit();" class="btn-save">Zapisz</a>
         </div>
+        
         
     </form>
 </div>
